@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 
 @Slf4j
 @Component
@@ -24,8 +23,6 @@ public class XmlGenerator extends AbstractGenerator {
 
     @Override
     public Path parseAndOutput(@NotNull String inputFilePath) throws IOException {
-        Objects.requireNonNull(inputFilePath, "inputFilePath is NULL");
-
         File inputFile = FileUtils.getFile(inputFilePath);
         checkFileExists(inputFilePath, inputFile);
 
