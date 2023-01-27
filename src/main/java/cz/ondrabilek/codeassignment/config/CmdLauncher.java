@@ -9,6 +9,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -26,6 +29,8 @@ public class CmdLauncher {
             return;
         }
 
+        logHeapSize();
+
         String filePath = arguments.getSourceArgs()[0];
         log.info("File path passed: {}", filePath);
 
@@ -35,6 +40,11 @@ public class CmdLauncher {
         } catch (Exception e) {
             log.error("Process ended with error: {}", e.getLocalizedMessage());
         }
+    }
+
+    private void logHeapSize() {
+        log.info("Heap size: ~{} MB", BigDecimal.valueOf(Runtime.getRuntime().maxMemory())
+                .divide(BigDecimal.valueOf(1000000), RoundingMode.HALF_UP));
     }
 
 

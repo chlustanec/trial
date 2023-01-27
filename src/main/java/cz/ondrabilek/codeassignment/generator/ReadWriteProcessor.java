@@ -9,76 +9,62 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 
 @Slf4j
 @Component
 class ReadWriteProcessor {
 
-    public int readParseAndOutput(@NotNull InputStream inputStream, @NotNull OutputStream outputStream, @NotNull ObjectMapper objectMapper) throws IOException {
-        Objects.requireNonNull(inputStream, "inputStream is NULL");
-        Objects.requireNonNull(outputStream, "outputStream is NULL");
-        Objects.requireNonNull(objectMapper, "objectMapper is NULL");
+    private static final int BUFFER_SIZE = 1024;
+    private final String splitRegex = SentenceUtils.getSplitRegex();
+    private final String sentenceDividersMatcher = SentenceUtils.getMatchesRegex();
 
+    public int readParseAndOutput(@NotNull InputStream inputStream, @NotNull OutputStream outputStream, @NotNull ObjectMapper objectMapper) throws IOException {
         long sentenceCounter = 0;
         int maxWords = 0;
 
-        String matchesRegex = SentenceUtils.getMatchesRegex();
-        String splitRegex = SentenceUtils.getSplitRegex();
+        StringBuilder restOfLine = new StringBuilder();
+        try (InputStreamReader is = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+            char[] readChars = new char[BUFFER_SIZE];
+            int noOfReadChars = BUFFER_SIZE;
 
-        String restOfLine = "";
+            while (noOfReadChars == BUFFER_SIZE) {
+                noOfReadChars = is.read(readChars);
+                String chunk = new String(readChars);
 
-
-        try (BufferedReader li = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-            for (String line = li.readLine(); line != null; line = li.readLine()) {
-
-                // skipping blank line
-                if (StringUtils.isBlank(line)) {
-                    continue;
+                if (noOfReadChars < BUFFER_SIZE) {
+                    chunk = StringUtils.left(chunk, noOfReadChars);
                 }
 
-                List<String> sentences = new ArrayList<>();
+                chunk = StringUtils.replaceChars(chunk, "\r\n", " ");
+                restOfLine.append(chunk);
 
-                // Joining by space, I consider newline as word separator
-                // and this prevents two words to be concatenated
-                String lineToSplit = restOfLine + " " + line;
+                while (restOfLine.toString().matches(sentenceDividersMatcher)) {
+                    String[] split = restOfLine.toString().split(splitRegex, 2);
 
-                while (lineToSplit.matches(matchesRegex)) {
-                    String[] split = lineToSplit.split(splitRegex, 2);
-
-                    sentences.add(split[0].trim());
-                    lineToSplit = split[1];
-                }
-
-                restOfLine = lineToSplit;
-
-                for (String sentenceString : sentences) {
-                    // Skipping empty sentences. This can happen if multiple sentence dividers are adjacent
-                    // or separated only by whitespace chars.
-                    if (StringUtils.isEmpty(sentenceString)) {
-                        continue;
+                    if (StringUtils.isNotEmpty(split[0])) {
+                        Sentence sentence = getSentence(split[0].trim(), ++sentenceCounter);
+                        maxWords = Math.max(maxWords, sentence.getNumberOfWords());
+                        outputStream.write(objectMapper.writeValueAsBytes(sentence));
                     }
 
-                    Sentence sentence = getSentence(sentenceString, ++sentenceCounter);
-
-                    maxWords = Math.max(maxWords, sentence.getNumberOfWords());
-                    outputStream.write(objectMapper.writeValueAsBytes(sentence));
+                    restOfLine = new StringBuilder(split[1]);
                 }
             }
         }
 
-        logRemainingNotSentence(restOfLine);
+        logRemainingNotSentence(restOfLine.toString());
 
         return maxWords;
     }
 
     private void logRemainingNotSentence(String restOfLine) {
-        if (!StringUtils.isEmpty(restOfLine)) {
+        if (StringUtils.isNotBlank(restOfLine)) {
             log.warn("There is Not-sentence left: {}", restOfLine);
         }
     }
