@@ -1,13 +1,17 @@
+# Installation
+tested with maven 3.8.7
+
+    mvn clean compile package
 # Start
 After packaging launch as standar .jar file with path to the file as an argument.
 
 Example: 
 
-    `java -jar codeassignment-0.0.1-SNAPSHOT.jar "C:\_Work\files\large.in"`
+    java -jar codeassignment-0.0.1-SNAPSHOT.jar "C:\_Work\files\large.in"
 
 Example with memory limit to 32m: 
 
-        `java -jar -Xmx32m codeassignment-0.0.1-SNAPSHOT.jar  "C:\Users\ondra\Downloads\f\small.in"`
+        java -jar -Xmx32m codeassignment-0.0.1-SNAPSHOT.jar  "C:\Users\ondra\Downloads\f\small.in"
 # Result
 When application ends without error, you can see paths to generated files in the console output.
 
