@@ -18,6 +18,10 @@ public abstract class FileTest {
         return getPath("files/tiny.in");
     }
 
+    protected Path getHugeOneLineFile() throws IOException {
+        return getPath("files/large_oneline.in");
+    }
+
     protected Path getSmallFile() throws IOException {
         return getPath("files/small.in");
     }
