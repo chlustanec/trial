@@ -56,7 +56,7 @@ class CsvGeneratorTest extends FileTest {
     @Test
     @SneakyThrows
     void nullFile() {
-        assertThrows(IllegalArgumentException.class, () -> generator.parseAndOutput(null), "inputFilePath is NULL");
+        assertThrows(NullPointerException.class, () -> generator.parseAndOutput(null), "inputFilePath is NULL");
     }
 
     @Test
