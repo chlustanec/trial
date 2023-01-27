@@ -1,15 +1,16 @@
 package cz.ondrabilek.codeassignment.generator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.istack.internal.NotNull;
 import cz.ondrabilek.codeassignment.model.Sentence;
 import cz.ondrabilek.codeassignment.model.SentenceFactory;
 import cz.ondrabilek.codeassignment.utils.SentenceUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,8 +33,10 @@ class ReadWriteProcessor {
 
         String restOfLine = "";
 
-        try (BufferedReader li = new BufferedReader(new InputStreamReader(inputStream))) {
+
+        try (BufferedReader li = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             for (String line = li.readLine(); line != null; line = li.readLine()) {
+
                 // skipping blank line
                 if (StringUtils.isBlank(line)) {
                     continue;

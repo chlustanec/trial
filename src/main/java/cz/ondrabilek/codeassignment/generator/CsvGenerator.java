@@ -1,11 +1,11 @@
 package cz.ondrabilek.codeassignment.generator;
 
-import com.sun.istack.internal.NotNull;
 import cz.ondrabilek.codeassignment.objectmapper.CsvObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.io.File;

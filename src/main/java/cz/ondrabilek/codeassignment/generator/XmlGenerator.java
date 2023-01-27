@@ -1,10 +1,10 @@
 package cz.ondrabilek.codeassignment.generator;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.sun.istack.internal.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.io.File;

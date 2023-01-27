@@ -29,7 +29,7 @@ class ReadWriteProcessorTest extends FileTest {
 
         assertEquals("Sentence 1, he, shocking, shouted, was, What, 你这肮脏的掠夺者, 停在那儿" + LS +
                         "Sentence 2, a, because, Chinese, couldn't, I, isn't, mother, my, perhaps, tongue, understand, word" + LS,
-                outputStream.toString());
+                outputStream.toString("UTF-8"));
 
         assertEquals(12, maxWords);
     }
@@ -37,15 +37,12 @@ class ReadWriteProcessorTest extends FileTest {
     @Test
     @SneakyThrows
     void nullParameters() {
-        assertThrows(NullPointerException.class,
-                () -> processor.readParseAndOutput(null, new ByteArrayOutputStream(), new CsvObjectMapper()),
-                "inputStream is NULL");
-        assertThrows(NullPointerException.class,
-                () -> processor.readParseAndOutput(Files.newInputStream(getTinyFile()), null, new CsvObjectMapper()),
-                "outputStream is NULL");
-        assertThrows(NullPointerException.class,
-                () -> processor.readParseAndOutput(Files.newInputStream(getTinyFile()), new ByteArrayOutputStream(), null),
-                "objectMapper is NULL");
+        assertThrows(IllegalArgumentException.class,
+                () -> processor.readParseAndOutput(null, new ByteArrayOutputStream(), new CsvObjectMapper()));
+        assertThrows(IllegalArgumentException.class,
+                () -> processor.readParseAndOutput(Files.newInputStream(getTinyFile()), null, new CsvObjectMapper()));
+        assertThrows(IllegalArgumentException.class,
+                () -> processor.readParseAndOutput(Files.newInputStream(getTinyFile()), new ByteArrayOutputStream(), null));
     }
 
     @Test

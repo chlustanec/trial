@@ -22,10 +22,6 @@ public abstract class FileTest {
         return getPath("files/small.in");
     }
 
-    protected Path getLargeFile() throws IOException {
-        return getPath("files/large.in");
-    }
-
     protected void deleteAllCreatedFiles() throws IOException {
         File[] files = getSmallFile().getParent().toFile().listFiles((dir, name) -> !name.toLowerCase(Locale.ROOT).endsWith(".in"));
         for (File file : files) {
