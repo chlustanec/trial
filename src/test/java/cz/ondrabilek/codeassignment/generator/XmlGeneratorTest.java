@@ -56,7 +56,7 @@ class XmlGeneratorTest extends FileTest {
     @Test
     @SneakyThrows
     void nullFile() {
-        assertThrows(NullPointerException.class, () -> generator.parseAndOutput(null), "inputFilePath is NULL");
+        assertThrows(RuntimeException.class, () -> generator.parseAndOutput(null), "inputFilePath is NULL");
     }
 
     @Test

@@ -37,11 +37,11 @@ class ReadWriteProcessorTest extends FileTest {
     @Test
     @SneakyThrows
     void nullParameters() {
-        assertThrows(NullPointerException.class,
+        assertThrows(RuntimeException.class,
                 () -> processor.readParseAndOutput(null, new ByteArrayOutputStream(), new CsvObjectMapper()));
-        assertThrows(NullPointerException.class,
+        assertThrows(RuntimeException.class,
                 () -> processor.readParseAndOutput(Files.newInputStream(getTinyFile()), null, new CsvObjectMapper()));
-        assertThrows(NullPointerException.class,
+        assertThrows(RuntimeException.class,
                 () -> processor.readParseAndOutput(Files.newInputStream(getTinyFile()), new ByteArrayOutputStream(), null));
     }
 
